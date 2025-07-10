@@ -44,10 +44,10 @@ bool audio_extn_ip_hdlr_intf_supported(audio_format_t format,
 
 #else
 
-#define audio_extn_ip_hdlr_intf_open(handle, is_dsp_decode, aud_sess_handle, usecase)  (0)
-#define audio_extn_ip_hdlr_intf_close(handle, is_dsp_decode, aud_sess_handle)          (0)
-#define audio_extn_ip_hdlr_intf_init(handle, lib_path, lib_handlei, adev, usecase)     (0)
-#define audio_extn_ip_hdlr_intf_deinit(handle)                                (0)
+#define audio_extn_ip_hdlr_intf_open(handle, is_dsp_decode, aud_sess_handle, usecase) (0)
+#define audio_extn_ip_hdlr_intf_close(handle, is_dsp_decode, aud_sess_handle) (0)
+#define audio_extn_ip_hdlr_intf_init(handle, lib_path, lib_handlei, adev, usecase) (0)
+#define audio_extn_ip_hdlr_intf_deinit(handle) (0)
 #define audio_extn_ip_hdlr_intf_supported(format, is_direct_passthru, is_loopback) (0)
 
 #endif

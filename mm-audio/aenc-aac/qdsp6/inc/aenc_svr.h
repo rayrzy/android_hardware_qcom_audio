@@ -61,24 +61,23 @@ extern "C" {
 #endif
 
 #define DEBUG_PRINT_ERROR LOGE
-#define DEBUG_PRINT       LOGV
-#define DEBUG_DETAIL      LOGV
+#define DEBUG_PRINT LOGV
+#define DEBUG_DETAIL LOGV
 
-typedef void (*message_func)(void* client_data, unsigned char id);
+typedef void (*message_func)(void *client_data, unsigned char id);
 
 /**
  @brief audio encoder ipc info structure
 
  */
-struct aac_ipc_info
-{
-    pthread_t thr;
-    int pipe_in;
-    int pipe_out;
-    int dead;
-    message_func process_msg_cb;
-    void         *client_data;
-    char         thread_name[128];
+struct aac_ipc_info {
+  pthread_t thr;
+  int pipe_in;
+  int pipe_out;
+  int dead;
+  message_func process_msg_cb;
+  void *client_data;
+  char thread_name[128];
 };
 
 /**
@@ -90,12 +89,12 @@ struct aac_ipc_info
  @return handle to command server
  */
 struct aac_ipc_info *omx_aac_thread_create(message_func cb,
-    void* client_data,
-    char *th_name);
+                                           void *client_data,
+                                           char *th_name);
 
 struct aac_ipc_info *omx_aac_event_thread_create(message_func cb,
-    void* client_data,
-    char *th_name);
+                                                 void *client_data,
+                                                 char *th_name);
 /**
  @brief This function stop command server
 
@@ -104,7 +103,6 @@ struct aac_ipc_info *omx_aac_event_thread_create(message_func cb,
  */
 void omx_aac_thread_stop(struct aac_ipc_info *aac_ipc);
 
-
 /**
  @brief This function post message in the command server
 
@@ -112,7 +110,7 @@ void omx_aac_thread_stop(struct aac_ipc_info *aac_ipc);
  @return none
  */
 void omx_aac_post_msg(struct aac_ipc_info *aac_ipc,
-                          unsigned char id);
+                      unsigned char id);
 
 #ifdef __cplusplus
 }

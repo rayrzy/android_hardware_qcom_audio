@@ -30,17 +30,17 @@
 #ifndef AUDIO_EXTN_PM_H
 #define AUDIO_EXTN_PM_H
 
+#include <cutils/properties.h>
 #include <errno.h>
+#include <fcntl.h>
+#include <log/log.h>
 #include <math.h>
+#include <platform.h>
+#include <pm-service.h>
 #include <pthread.h>
 #include <stdlib.h>
-#include <fcntl.h>
-#include <pm-service.h>
-#include "audio_hw.h"
-#include <platform.h>
-#include <cutils/properties.h>
-#include <log/log.h>
 
+#include "audio_hw.h"
 
 /* Client name to be registered with PM */
 #define PM_CLIENT_NAME "audio"
@@ -50,19 +50,19 @@
 #define BOOT_IMG_SYSFS_PATH "/sys/kernel/boot_adsp/boot"
 
 typedef struct {
-    //MAX_NAME_LEN defined in mdm_detect.h
-    char img_name[MAX_NAME_LEN];
-    //this handle is used by peripheral mgr
-    void *pm_handle;
-}s_audio_subsys;
+  // MAX_NAME_LEN defined in mdm_detect.h
+  char img_name[MAX_NAME_LEN];
+  // this handle is used by peripheral mgr
+  void *pm_handle;
+} s_audio_subsys;
 
 /* Vote to peripheral manager for required subsystem */
-int audio_extn_pm_vote (void);
+int audio_extn_pm_vote(void);
 
 /* Unvote to peripheral manager */
-void audio_extn_pm_unvote (void);
+void audio_extn_pm_unvote(void);
 
 /* Get subsytem status notification from PM */
-void audio_extn_pm_event_notifier (void *client_data, enum pm_event event);
+void audio_extn_pm_event_notifier(void *client_data, enum pm_event event);
 
-#endif // AUDIO_EXTN_PM_H
+#endif  // AUDIO_EXTN_PM_H

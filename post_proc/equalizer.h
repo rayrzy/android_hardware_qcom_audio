@@ -22,23 +22,23 @@
 
 #include "bundle.h"
 
-#define NUM_EQ_BANDS              5
-#define INVALID_PRESET		 -2
-#define PRESET_CUSTOM		 -1
+#define NUM_EQ_BANDS 5
+#define INVALID_PRESET -2
+#define PRESET_CUSTOM -1
 
 extern const effect_descriptor_t equalizer_descriptor;
 
 typedef struct equalizer_context_s {
-    effect_context_t common;
+  effect_context_t common;
 
-    int preset;
-    int band_levels[NUM_EQ_BANDS];
+  int preset;
+  int band_levels[NUM_EQ_BANDS];
 
-    // Offload vars
-    struct mixer_ctl *ctl;
-    int hw_acc_fd;
-    uint32_t device;
-    struct eq_params offload_eq;
+  // Offload vars
+  struct mixer_ctl *ctl;
+  int hw_acc_fd;
+  uint32_t device;
+  struct eq_params offload_eq;
 } equalizer_context_t;
 
 int equalizer_get_parameter(effect_context_t *context, effect_param_t *p,
@@ -47,9 +47,9 @@ int equalizer_get_parameter(effect_context_t *context, effect_param_t *p,
 int equalizer_set_parameter(effect_context_t *context, effect_param_t *p,
                             uint32_t size);
 
-int equalizer_set_device(effect_context_t *context,  uint32_t device);
+int equalizer_set_device(effect_context_t *context, uint32_t device);
 
-int equalizer_set_mode(effect_context_t *context,  int32_t hw_acc_fd);
+int equalizer_set_mode(effect_context_t *context, int32_t hw_acc_fd);
 
 int equalizer_reset(effect_context_t *context);
 

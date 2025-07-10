@@ -27,24 +27,22 @@ OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
 IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 --------------------------------------------------------------------------*/
 
+#include "omx_log.h"
+
+#include <cutils/properties.h>
 #include <stdlib.h>
 #include <utils/Log.h>
-#include <cutils/properties.h>
-
-#include "omx_log.h"
 
 using namespace std;
 
 uint32_t gOmxLogLevel;
 
 void updateLogLevel() {
-    char level[PROPERTY_VALUE_MAX];
+  char level[PROPERTY_VALUE_MAX];
 #ifdef ANDROID
-    property_get("persist.vendor.audio.debug.omx.logs.level", level, "0");
-    gOmxLogLevel = atoi(level);
+  property_get("persist.vendor.audio.debug.omx.logs.level", level, "0");
+  gOmxLogLevel = atoi(level);
 #else
-    gOmxLogLevel = atoi("0");
+  gOmxLogLevel = atoi("0");
 #endif
 }
-
-

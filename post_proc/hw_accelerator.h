@@ -31,21 +31,21 @@
 #ifndef HW_ACCELERATOR_EFFECT_H_
 #define HW_ACCELERATOR_EFFECT_H_
 
-#include "bundle.h"
-
 #include <linux/msm_audio.h>
+
+#include "bundle.h"
 
 #define HWACCELERATOR_OUTPUT_CHANNELS AUDIO_CHANNEL_OUT_STEREO
 
 extern const effect_descriptor_t hw_accelerator_descriptor;
 
 typedef struct hw_accelerator_context_s {
-    effect_context_t common;
+  effect_context_t common;
 
-    int fd;
-    uint32_t device;
-    bool intial_buffer_done;
-    struct msm_hwacc_effects_config cfg;
+  int fd;
+  uint32_t device;
+  bool intial_buffer_done;
+  struct msm_hwacc_effects_config cfg;
 } hw_accelerator_context_t;
 
 int hw_accelerator_get_parameter(effect_context_t *context,
@@ -54,7 +54,7 @@ int hw_accelerator_get_parameter(effect_context_t *context,
 int hw_accelerator_set_parameter(effect_context_t *context,
                                  effect_param_t *p, uint32_t size);
 
-int hw_accelerator_set_device(effect_context_t *context,  uint32_t device);
+int hw_accelerator_set_device(effect_context_t *context, uint32_t device);
 
 int hw_accelerator_reset(effect_context_t *context);
 
@@ -66,7 +66,7 @@ int hw_accelerator_disable(effect_context_t *context);
 
 int hw_accelerator_release(effect_context_t *context);
 
-int hw_accelerator_set_mode(effect_context_t *context,  int32_t frame_count);
+int hw_accelerator_set_mode(effect_context_t *context, int32_t frame_count);
 
 int hw_accelerator_process(effect_context_t *context, audio_buffer_t *in,
                            audio_buffer_t *out);

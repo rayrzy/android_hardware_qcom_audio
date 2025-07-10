@@ -56,6 +56,4 @@ extern uint32_t gOmxLogLevel;
 
 void updateLogLevel();
 
-
-#endif // OMX_LOGS_H
-
+#endif  // OMX_LOGS_H

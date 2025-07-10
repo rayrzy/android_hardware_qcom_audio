@@ -27,66 +27,64 @@ WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
 OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
 IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.*/
 
+#include <fcntl.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <unistd.h>
 #include <string.h>
-#include <fcntl.h>
-#include <vector>
-
-#include <utils/threads.h>
+#include <unistd.h>
 #include <utils/String8.h>
+#include <utils/threads.h>
 
+#include <vector>
 
 namespace android {
 
 enum notify_status {
-    snd_card_online,
-    snd_card_offline,
-    cpe_online,
-    cpe_offline
+  snd_card_online,
+  snd_card_offline,
+  cpe_online,
+  cpe_offline
 };
 
 enum notify_status_type {
-    SND_CARD_STATE,
-    CPE_STATE
+  SND_CARD_STATE,
+  CPE_STATE
 };
 
-enum audio_event_status {audio_event_on, audio_event_off};
+enum audio_event_status { audio_event_on,
+                          audio_event_off };
 
 #define AUDIO_PARAMETER_KEY_EXT_AUDIO_DEVICE "ext_audio_device"
 
-class AudioDaemon:public Thread, public IBinder :: DeathRecipient
-{
-    /*Overrides*/
-    virtual bool        threadLoop();
-    virtual status_t    readyToRun();
-    virtual void        onFirstRef();
-    virtual void        binderDied(const wp < IBinder > &who);
+class AudioDaemon : public Thread, public IBinder ::DeathRecipient {
+  /*Overrides*/
+  virtual bool threadLoop();
+  virtual status_t readyToRun();
+  virtual void onFirstRef();
+  virtual void binderDied(const wp<IBinder> &who);
 
-    bool processUeventMessage();
-    void notifyAudioSystem(int snd_card,
-                           notify_status status,
-                           notify_status_type type);
-    void notifyAudioSystemEventStatus(const char* event, audio_event_status status);
-    int mUeventSock;
-    bool getStateFDs(std::vector<std::pair<int,int> > &sndcardFdPair);
-    void putStateFDs(std::vector<std::pair<int,int> > &sndcardFdPair);
-    bool getDeviceEventFDs();
-    void putDeviceEventFDs();
-    void checkEventState(int fd, int index);
+  bool processUeventMessage();
+  void notifyAudioSystem(int snd_card,
+                         notify_status status,
+                         notify_status_type type);
+  void notifyAudioSystemEventStatus(const char *event, audio_event_status status);
+  int mUeventSock;
+  bool getStateFDs(std::vector<std::pair<int, int> > &sndcardFdPair);
+  void putStateFDs(std::vector<std::pair<int, int> > &sndcardFdPair);
+  bool getDeviceEventFDs();
+  void putDeviceEventFDs();
+  void checkEventState(int fd, int index);
 
-public:
-    AudioDaemon();
-    virtual ~AudioDaemon();
+ public:
+  AudioDaemon();
+  virtual ~AudioDaemon();
 
-private:
-    std::vector<std::pair<int,int> > mSndCardFd;
+ private:
+  std::vector<std::pair<int, int> > mSndCardFd;
 
-    //file descriptors for audio device events and their statuses
-    std::vector<std::pair<String8, int> > mAudioEvents;
-    std::vector<std::pair<String8, int> > mAudioEventsStatus;
-
+  // file descriptors for audio device events and their statuses
+  std::vector<std::pair<String8, int> > mAudioEvents;
+  std::vector<std::pair<String8, int> > mAudioEventsStatus;
 };
 
-}
+}  // namespace android

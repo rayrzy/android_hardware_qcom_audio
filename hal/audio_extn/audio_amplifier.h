@@ -31,13 +31,13 @@
 #define amplifier_close() (0)
 #else
 
-int amplifier_open(void* adev);
+int amplifier_open(void *adev);
 int amplifier_set_input_devices(uint32_t devices);
 int amplifier_set_output_devices(uint32_t devices);
 int amplifier_enable_devices(uint32_t devices, bool enable);
 int amplifier_set_mode(audio_mode_t mode);
 int amplifier_output_stream_start(struct audio_stream_out *stream,
-        bool offload);
+                                  bool offload);
 int amplifier_input_stream_start(struct audio_stream_in *stream);
 int amplifier_output_stream_standby(struct audio_stream_out *stream);
 int amplifier_input_stream_standby(struct audio_stream_in *stream);

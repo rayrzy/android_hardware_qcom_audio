@@ -30,8 +30,9 @@
 #ifndef OFFLOAD_ASPHERE_H_
 #define OFFLOAD_ASPHERE_H_
 
-#include <cutils/str_parms.h>
 #include <cutils/list.h>
+#include <cutils/str_parms.h>
+
 #include "bundle.h"
 
 #ifdef AUDIOSPHERE_ENABLED
@@ -43,7 +44,7 @@ void handle_asphere_on_effect_enabled(bool enable,
                                       struct listnode *created_effects);
 #else
 #define asphere_get_parameters(query, reply) (0)
-#define asphere_set_parameters(parms)  (0)
+#define asphere_set_parameters(parms) (0)
 #define handle_asphere_on_effect_enabled(enable, context, created_effects) (0)
 #endif /* AUDIOSPHERE_ENABLED */
 

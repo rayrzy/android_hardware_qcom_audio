@@ -17,18 +17,15 @@
  * limitations under the License.
  */
 
-
 #ifndef ANDROID_AUDIO_QAHW_EFFECT_H
 #define ANDROID_AUDIO_QAHW_EFFECT_H
 
+#include <cutils/bitops.h>
 #include <errno.h>
 #include <stdint.h>
 #include <strings.h>
 #include <sys/cdefs.h>
 #include <sys/types.h>
-
-#include <cutils/bitops.h>
-
 #include <system/audio.h>
 
 __BEGIN_DECLS
@@ -51,86 +48,85 @@ __BEGIN_DECLS
 // OpenSL ES interface, this ID must be the one defined in OpenSLES_IID.h for that interface.
 // - When used as uuid, it should be a unique UUID for this particular implementation.
 typedef struct qahw_effect_uuid_s {
-    uint32_t timeLow;
-    uint16_t timeMid;
-    uint16_t timeHiAndVersion;
-    uint16_t clockSeq;
-    uint8_t node[6];
+  uint32_t timeLow;
+  uint16_t timeMid;
+  uint16_t timeHiAndVersion;
+  uint16_t clockSeq;
+  uint8_t node[6];
 } qahw_effect_uuid_t;
 
 // Maximum length of character strings in structures defines by this API.
 #define QAHW_EFFECT_STRING_LEN_MAX 64
 
 // NULL UUID definition (matches SL_IID_NULL_)
-#define QAHW_EFFECT_UUID_INITIALIZER { 0xec7178ec, 0xe5e1, 0x4432, 0xa3f4, \
-                                     { 0x46, 0x57, 0xe6, 0x79, 0x52, 0x10 } }
+#define QAHW_EFFECT_UUID_INITIALIZER       \
+  {                                        \
+    0xec7178ec, 0xe5e1, 0x4432, 0xa3f4,    \
+    { 0x46, 0x57, 0xe6, 0x79, 0x52, 0x10 } \
+  }
 static const qahw_effect_uuid_t QAHW_EFFECT_UUID_NULL_ = QAHW_EFFECT_UUID_INITIALIZER;
-static const qahw_effect_uuid_t * const QAHW_EFFECT_UUID_NULL = &QAHW_EFFECT_UUID_NULL_;
-static const char * const QAHW_EFFECT_UUID_NULL_STR = "ec7178ec-e5e1-4432-a3f4-4657e6795210";
-
+static const qahw_effect_uuid_t *const QAHW_EFFECT_UUID_NULL = &QAHW_EFFECT_UUID_NULL_;
+static const char *const QAHW_EFFECT_UUID_NULL_STR = "ec7178ec-e5e1-4432-a3f4-4657e6795210";
 
 // The effect descriptor contains necessary information to facilitate the enumeration of the effect
 // engines present in a library.
 typedef struct qahw_effect_descriptor_s {
-    qahw_effect_uuid_t type;     // UUID of to the OpenSL ES interface implemented by this effect
-    qahw_effect_uuid_t uuid;     // UUID for this particular implementation
-    uint32_t      apiVersion;    // Version of the effect control API implemented
-    uint32_t      flags;         // effect engine capabilities/requirements flags (see below)
-    uint16_t      cpuLoad;       // CPU load indication (see below)
-    uint16_t      memoryUsage;   // Data Memory usage (see below)
-    char    name[QAHW_EFFECT_STRING_LEN_MAX];   // human readable effect name
-    char    implementor[QAHW_EFFECT_STRING_LEN_MAX];    // human readable effect implementor name
+  qahw_effect_uuid_t type;                       // UUID of to the OpenSL ES interface implemented by this effect
+  qahw_effect_uuid_t uuid;                       // UUID for this particular implementation
+  uint32_t apiVersion;                           // Version of the effect control API implemented
+  uint32_t flags;                                // effect engine capabilities/requirements flags (see below)
+  uint16_t cpuLoad;                              // CPU load indication (see below)
+  uint16_t memoryUsage;                          // Data Memory usage (see below)
+  char name[QAHW_EFFECT_STRING_LEN_MAX];         // human readable effect name
+  char implementor[QAHW_EFFECT_STRING_LEN_MAX];  // human readable effect implementor name
 } qahw_effect_descriptor_t;
 
-#define QAHW_EFFECT_MAKE_API_VERSION(M, m)  (((M)<<16) | ((m) & 0xFFFF))
-#define QAHW_EFFECT_API_VERSION_MAJOR(v)    ((v)>>16)
-#define QAHW_EFFECT_API_VERSION_MINOR(v)    ((m) & 0xFFFF)
-
+#define QAHW_EFFECT_MAKE_API_VERSION(M, m) (((M) << 16) | ((m)&0xFFFF))
+#define QAHW_EFFECT_API_VERSION_MAJOR(v) ((v) >> 16)
+#define QAHW_EFFECT_API_VERSION_MINOR(v) ((m)&0xFFFF)
 
 /////////////////////////////////////////////////
 //      Effect control interface
 /////////////////////////////////////////////////
 
 // Effect control interface version 2.0
-#define QAHW_EFFECT_CONTROL_API_VERSION QAHW_EFFECT_MAKE_API_VERSION(2,0)
+#define QAHW_EFFECT_CONTROL_API_VERSION QAHW_EFFECT_MAKE_API_VERSION(2, 0)
 
-typedef void* qahw_effect_handle_t;
-
+typedef void *qahw_effect_handle_t;
 
 // Forward definition of type qahw_audio_buffer_t
 typedef struct qahw_audio_buffer_s qahw_audio_buffer_t;
-
 
 //
 //--- Standardized command codes for command() function
 //
 enum qahw_effect_command_e {
-   QAHW_EFFECT_CMD_INIT,                 // initialize effect engine
-   QAHW_EFFECT_CMD_SET_CONFIG,           // configure effect engine (see effect_config_t)
-   QAHW_EFFECT_CMD_RESET,                // reset effect engine
-   QAHW_EFFECT_CMD_ENABLE,               // enable effect process
-   QAHW_EFFECT_CMD_DISABLE,              // disable effect process
-   QAHW_EFFECT_CMD_SET_PARAM,            // set parameter immediately (see effect_param_t)
-   QAHW_EFFECT_CMD_SET_PARAM_DEFERRED,   // set parameter deferred
-   QAHW_EFFECT_CMD_SET_PARAM_COMMIT,     // commit previous set parameter deferred
-   QAHW_EFFECT_CMD_GET_PARAM,            // get parameter
-   QAHW_EFFECT_CMD_SET_DEVICE,           // set audio device (see audio.h, audio_devices_t)
-   QAHW_EFFECT_CMD_SET_VOLUME,           // set volume
-   QAHW_EFFECT_CMD_SET_AUDIO_MODE,       // set the audio mode (normal, ring, ...)
-   QAHW_EFFECT_CMD_SET_CONFIG_REVERSE,   // configure effect engine reverse stream
-                                         // (see effect_config_t)
-   QAHW_EFFECT_CMD_SET_INPUT_DEVICE,     // set capture device (see audio.h, audio_devices_t)
-   QAHW_EFFECT_CMD_GET_CONFIG,           // read effect engine configuration
-   QAHW_EFFECT_CMD_GET_CONFIG_REVERSE,   // read configure effect engine reverse stream
-                                         // configuration
-   QAHW_EFFECT_CMD_GET_FEATURE_SUPPORTED_CONFIGS, // get all supported configurations for
+  QAHW_EFFECT_CMD_INIT,                           // initialize effect engine
+  QAHW_EFFECT_CMD_SET_CONFIG,                     // configure effect engine (see effect_config_t)
+  QAHW_EFFECT_CMD_RESET,                          // reset effect engine
+  QAHW_EFFECT_CMD_ENABLE,                         // enable effect process
+  QAHW_EFFECT_CMD_DISABLE,                        // disable effect process
+  QAHW_EFFECT_CMD_SET_PARAM,                      // set parameter immediately (see effect_param_t)
+  QAHW_EFFECT_CMD_SET_PARAM_DEFERRED,             // set parameter deferred
+  QAHW_EFFECT_CMD_SET_PARAM_COMMIT,               // commit previous set parameter deferred
+  QAHW_EFFECT_CMD_GET_PARAM,                      // get parameter
+  QAHW_EFFECT_CMD_SET_DEVICE,                     // set audio device (see audio.h, audio_devices_t)
+  QAHW_EFFECT_CMD_SET_VOLUME,                     // set volume
+  QAHW_EFFECT_CMD_SET_AUDIO_MODE,                 // set the audio mode (normal, ring, ...)
+  QAHW_EFFECT_CMD_SET_CONFIG_REVERSE,             // configure effect engine reverse stream
+                                                  // (see effect_config_t)
+  QAHW_EFFECT_CMD_SET_INPUT_DEVICE,               // set capture device (see audio.h, audio_devices_t)
+  QAHW_EFFECT_CMD_GET_CONFIG,                     // read effect engine configuration
+  QAHW_EFFECT_CMD_GET_CONFIG_REVERSE,             // read configure effect engine reverse stream
+                                                  // configuration
+  QAHW_EFFECT_CMD_GET_FEATURE_SUPPORTED_CONFIGS,  // get all supported configurations for
                                                   // a feature.
-   QAHW_EFFECT_CMD_GET_FEATURE_CONFIG,   // get current feature configuration
-   QAHW_EFFECT_CMD_SET_FEATURE_CONFIG,   // set current feature configuration
-   QAHW_EFFECT_CMD_SET_AUDIO_SOURCE,     // set the audio source (see audio.h, audio_source_t)
-   QAHW_EFFECT_CMD_OFFLOAD,              // set if effect thread is an offload one,
-                                         // send the ioHandle of the effect thread
-   QAHW_EFFECT_CMD_FIRST_PROPRIETARY = 0x10000 // first proprietary command code
+  QAHW_EFFECT_CMD_GET_FEATURE_CONFIG,             // get current feature configuration
+  QAHW_EFFECT_CMD_SET_FEATURE_CONFIG,             // set current feature configuration
+  QAHW_EFFECT_CMD_SET_AUDIO_SOURCE,               // set the audio source (see audio.h, audio_source_t)
+  QAHW_EFFECT_CMD_OFFLOAD,                        // set if effect thread is an offload one,
+                                                  // send the ioHandle of the effect thread
+  QAHW_EFFECT_CMD_FIRST_PROPRIETARY = 0x10000     // first proprietary command code
 };
 
 //==================================================================================================
@@ -457,7 +453,6 @@ enum qahw_effect_command_e {
 //  command and response fields is free in this case
 //==================================================================================================
 
-
 // Audio buffer descriptor used by process(), bufferProvider() functions and buffer_config_t
 // structure. Multi-channel audio is always interleaved. The channel order is from LSB to MSB with
 // regard to the channel mask definition in audio.h, audio_channel_mask_t e.g :
@@ -467,13 +462,13 @@ enum qahw_effect_command_e {
 // channels at a given time. Frame size for unspecified format (AUDIO_FORMAT_OTHER) is 8 bit by
 // definition
 struct qahw_audio_buffer_s {
-    size_t   frameCount;        // number of frames in buffer
-    union {
-        void*       raw;        // raw pointer to start of buffer
-        int32_t*    s32;        // pointer to signed 32 bit data at start of buffer
-        int16_t*    s16;        // pointer to signed 16 bit data at start of buffer
-        uint8_t*    u8;         // pointer to unsigned 8 bit data at start of buffer
-    };
+  size_t frameCount;  // number of frames in buffer
+  union {
+    void *raw;     // raw pointer to start of buffer
+    int32_t *s32;  // pointer to signed 32 bit data at start of buffer
+    int16_t *s16;  // pointer to signed 16 bit data at start of buffer
+    uint8_t *u8;   // pointer to unsigned 8 bit data at start of buffer
+  };
 };
 
 // The buffer_provider_s structure contains functions that can be used
@@ -488,75 +483,71 @@ struct qahw_audio_buffer_s {
 // and the buffer configuration (buffer_config_t) given by the QAHW_EFFECT_CMD_SET_CONFIG
 // command did not specify an audio buffer.
 
-typedef int32_t (* qahw_buffer_function_t)(void *cookie, qahw_audio_buffer_t *buffer);
+typedef int32_t (*qahw_buffer_function_t)(void *cookie, qahw_audio_buffer_t *buffer);
 
 typedef struct qahw_buffer_provider_s {
-    qahw_buffer_function_t getBuffer;       // retrieve next buffer
-    qahw_buffer_function_t releaseBuffer;   // release used buffer
-    void       *cookie;                // for use by client of buffer provider functions
+  qahw_buffer_function_t getBuffer;      // retrieve next buffer
+  qahw_buffer_function_t releaseBuffer;  // release used buffer
+  void *cookie;                          // for use by client of buffer provider functions
 } qahw_buffer_provider_t;
-
 
 // The qahw_buffer_config_s structure specifies the input or output audio format
 // to be used by the effect engine. It is part of the effect_config_t
 // structure that defines both input and output buffer configurations and is
 // passed by the QAHW_EFFECT_CMD_SET_CONFIG or QAHW_EFFECT_CMD_SET_CONFIG_REVERSE command.
 typedef struct qahw_buffer_config_s {
-    qahw_audio_buffer_t  buffer; // buffer for use by process() function if not passed explicitly
-    uint32_t   samplingRate;     // sampling rate
-    uint32_t   channels;         // channel mask (see audio_channel_mask_t in audio.h)
-    qahw_buffer_provider_t bufferProvider;   // buffer provider
-    uint8_t    format;           // Audio format (see audio_format_t in audio.h)
-    uint8_t    accessMode;       // read/write or accumulate in buffer (qahw_effect_buffer_access_e)
-    uint16_t   mask;             // indicates which of the above fields is valid
+  qahw_audio_buffer_t buffer;             // buffer for use by process() function if not passed explicitly
+  uint32_t samplingRate;                  // sampling rate
+  uint32_t channels;                      // channel mask (see audio_channel_mask_t in audio.h)
+  qahw_buffer_provider_t bufferProvider;  // buffer provider
+  uint8_t format;                         // Audio format (see audio_format_t in audio.h)
+  uint8_t accessMode;                     // read/write or accumulate in buffer (qahw_effect_buffer_access_e)
+  uint16_t mask;                          // indicates which of the above fields is valid
 } qahw_buffer_config_t;
 
 // Values for "accessMode" field of buffer_config_t:
 //   overwrite, read only, accumulate (read/modify/write)
 enum qahw_effect_buffer_access_e {
-    QAHW_EFFECT_BUFFER_ACCESS_WRITE,
-    QAHW_EFFECT_BUFFER_ACCESS_READ,
-    QAHW_EFFECT_BUFFER_ACCESS_ACCUMULATE
+  QAHW_EFFECT_BUFFER_ACCESS_WRITE,
+  QAHW_EFFECT_BUFFER_ACCESS_READ,
+  QAHW_EFFECT_BUFFER_ACCESS_ACCUMULATE
 
 };
 
 // feature identifiers for QAHW_EFFECT_CMD_GET_FEATURE_SUPPORTED_CONFIGS command
 enum qahw_effect_feature_e {
-    QAHW_EFFECT_FEATURE_AUX_CHANNELS, // supports auxiliary channels
-                                      // (e.g. dual mic noise suppressor)
-    QAHW_EFFECT_FEATURE_CNT
+  QAHW_EFFECT_FEATURE_AUX_CHANNELS,  // supports auxiliary channels
+                                     // (e.g. dual mic noise suppressor)
+  QAHW_EFFECT_FEATURE_CNT
 };
 
 // QAHW_EFFECT_FEATURE_AUX_CHANNELS feature configuration descriptor. Describe a combination
 // of main and auxiliary channels supported
 typedef struct qahw_channel_config_s {
-    audio_channel_mask_t main_channels; // channel mask for main channels
-    audio_channel_mask_t aux_channels;  // channel mask for auxiliary channels
+  audio_channel_mask_t main_channels;  // channel mask for main channels
+  audio_channel_mask_t aux_channels;   // channel mask for auxiliary channels
 } qahw_channel_config_t;
-
 
 // Values for bit field "mask" in buffer_config_t. If a bit is set, the corresponding field
 // in buffer_config_t must be taken into account when executing the QAHW_EFFECT_CMD_SET_CONFIG
 // command
-#define QAHW_EFFECT_CONFIG_BUFFER    0x0001  // buffer field must be taken into account
-#define QAHW_EFFECT_CONFIG_SMP_RATE  0x0002  // samplingRate field must be taken into account
-#define QAHW_EFFECT_CONFIG_CHANNELS  0x0004  // channels field must be taken into account
-#define QAHW_EFFECT_CONFIG_FORMAT    0x0008  // format field must be taken into account
-#define QAHW_EFFECT_CONFIG_ACC_MODE  0x0010  // accessMode field must be taken into account
-#define QAHW_EFFECT_CONFIG_PROVIDER  0x0020  // bufferProvider field must be taken into account
+#define QAHW_EFFECT_CONFIG_BUFFER 0x0001    // buffer field must be taken into account
+#define QAHW_EFFECT_CONFIG_SMP_RATE 0x0002  // samplingRate field must be taken into account
+#define QAHW_EFFECT_CONFIG_CHANNELS 0x0004  // channels field must be taken into account
+#define QAHW_EFFECT_CONFIG_FORMAT 0x0008    // format field must be taken into account
+#define QAHW_EFFECT_CONFIG_ACC_MODE 0x0010  // accessMode field must be taken into account
+#define QAHW_EFFECT_CONFIG_PROVIDER 0x0020  // bufferProvider field must be taken into account
 #define QAHW_EFFECT_CONFIG_ALL (QAHW_EFFECT_CONFIG_BUFFER | QAHW_EFFECT_CONFIG_SMP_RATE | \
                                 QAHW_EFFECT_CONFIG_CHANNELS | QAHW_EFFECT_CONFIG_FORMAT | \
                                 QAHW_EFFECT_CONFIG_ACC_MODE | QAHW_EFFECT_CONFIG_PROVIDER)
-
 
 // effect_config_s structure describes the format of the pCmdData argument of
 // QAHW_EFFECT_CMD_SET_CONFIG command to configure audio parameters and buffers for effect
 // engine input and output.
 typedef struct qahw_effect_config_s {
-    qahw_buffer_config_t   input_cfg;
-    qahw_buffer_config_t   output_cfg;
+  qahw_buffer_config_t input_cfg;
+  qahw_buffer_config_t output_cfg;
 } qahw_effect_config_t;
-
 
 // effect_param_s structure describes the format of the pCmdData argument of
 // QAHW_EFFECT_CMD_SET_PARAM command and pCmdData and pReplyData of QAHW_EFFECT_CMD_GET_PARAM
@@ -583,18 +574,17 @@ typedef struct qahw_effect_config_s {
 //  +-----------+
 
 typedef struct qahw_effect_param_s {
-    int32_t     status;     // Transaction status (unused for command, used for reply)
-    uint32_t    psize;      // Parameter size
-    uint32_t    vsize;      // Value size
-    char        data[];     // Start of Parameter + Value data
+  int32_t status;  // Transaction status (unused for command, used for reply)
+  uint32_t psize;  // Parameter size
+  uint32_t vsize;  // Value size
+  char data[];     // Start of Parameter + Value data
 } qahw_effect_param_t;
 
 // structure used by QAHW_EFFECT_CMD_OFFLOAD command
 typedef struct qahw_effect_offload_param_s {
-    bool isOffload;         // true if the playback thread the effect is attached to is offloaded
-    int ioHandle;           // io handle of the playback thread the effect is attached to
+  bool isOffload;  // true if the playback thread the effect is attached to is offloaded
+  int ioHandle;    // io handle of the playback thread the effect is attached to
 } qahw_effect_offload_param_t;
-
 
 /////////////////////////////////////////////////
 //      Effect library interface
@@ -605,7 +595,7 @@ typedef struct qahw_effect_offload_param_s {
 // number can only be used for fully backwards compatible changes
 #define QAHW_EFFECT_LIBRARY_API_VERSION QAHW_EFFECT_MAKE_API_VERSION(3, 0)
 
-typedef void* qahw_effect_lib_handle_t;
+typedef void *qahw_effect_lib_handle_t;
 
 ////////////////////////////////////////////////////////////////////////////////
 //
@@ -836,7 +826,6 @@ int32_t qahw_effect_command(qahw_effect_handle_t self,
 int32_t qahw_effect_process_reverse(qahw_effect_handle_t self,
                                     qahw_audio_buffer_t *in_buffer,
                                     qahw_audio_buffer_t *out_buffer);
-
 
 __END_DECLS
 

@@ -20,20 +20,19 @@
 #ifdef DTS_EAGLE
 
 #include <cutils/properties.h>
-#include <sys/stat.h>
 #include <fcntl.h>
+#include <sys/stat.h>
 
 enum {
-    EFFECT_TYPE_EQ = 0,
-    EFFECT_TYPE_VIRT,
-    EFFECT_TYPE_BB,
+  EFFECT_TYPE_EQ = 0,
+  EFFECT_TYPE_VIRT,
+  EFFECT_TYPE_BB,
 };
 
 enum {
-    EFFECT_SET_PARAM = 0,
-    EFFECT_ENABLE_PARAM,
+  EFFECT_SET_PARAM = 0,
+  EFFECT_ENABLE_PARAM,
 };
-
 
 #define EFFECT_NO_OP 0
 #define PCM_DEV_ID 9

@@ -37,54 +37,53 @@ namespace android {
 
 // ----------------------------------------------------------------------------
 class EffectsHwAcc {
-public:
-    EffectsHwAcc(uint32_t sampleRate);
-    virtual ~EffectsHwAcc();
+ public:
+  EffectsHwAcc(uint32_t sampleRate);
+  virtual ~EffectsHwAcc();
 
-    virtual void setSampleRate(uint32_t inpSR, uint32_t outSR);
-    virtual void unprepareEffects(AudioBufferProvider **trackBufferProvider);
-    virtual status_t prepareEffects(AudioBufferProvider **trackInputBufferProvider,
-                            AudioBufferProvider **trackBufferProvider,
-                            int sessionId, audio_channel_mask_t channelMask,
-                            int frameCount);
-    virtual void setBufferProvider(AudioBufferProvider **trackInputbufferProvider,
-                           AudioBufferProvider **trackBufferProvider);
+  virtual void setSampleRate(uint32_t inpSR, uint32_t outSR);
+  virtual void unprepareEffects(AudioBufferProvider **trackBufferProvider);
+  virtual status_t prepareEffects(AudioBufferProvider **trackInputBufferProvider,
+                                  AudioBufferProvider **trackBufferProvider,
+                                  int sessionId, audio_channel_mask_t channelMask,
+                                  int frameCount);
+  virtual void setBufferProvider(AudioBufferProvider **trackInputbufferProvider,
+                                 AudioBufferProvider **trackBufferProvider);
 #ifdef HW_ACC_HPX
-    virtual void updateHPXState(uint32_t state);
+  virtual void updateHPXState(uint32_t state);
 #endif
 
-    /* AudioBufferProvider that wraps a track AudioBufferProvider by a call to
-       h/w accelerated effect */
-    class EffectsBufferProvider : public AudioBufferProvider {
-    public:
-        EffectsBufferProvider();
-        virtual ~EffectsBufferProvider();
+  /* AudioBufferProvider that wraps a track AudioBufferProvider by a call to
+     h/w accelerated effect */
+  class EffectsBufferProvider : public AudioBufferProvider {
+   public:
+    EffectsBufferProvider();
+    virtual ~EffectsBufferProvider();
 
-        virtual status_t getNextBuffer(Buffer* buffer, int64_t pts);
-        virtual void releaseBuffer(Buffer* buffer);
+    virtual status_t getNextBuffer(Buffer *buffer, int64_t pts);
+    virtual void releaseBuffer(Buffer *buffer);
 
-        AudioBufferProvider* mTrackInputBufferProvider;
-        AudioBufferProvider* mTrackBufferProvider;
-        effect_handle_t    mEffectsHandle;
-        effect_config_t    mEffectsConfig;
+    AudioBufferProvider *mTrackInputBufferProvider;
+    AudioBufferProvider *mTrackBufferProvider;
+    effect_handle_t mEffectsHandle;
+    effect_config_t mEffectsConfig;
 
-        void *mInputBuffer;
-        void *mOutputBuffer;
-        uint32_t mInputBufferFrameCountOffset;
-    };
+    void *mInputBuffer;
+    void *mOutputBuffer;
+    uint32_t mInputBufferFrameCountOffset;
+  };
 
-    bool mEnabled;
-    int32_t mFd;
+  bool mEnabled;
+  int32_t mFd;
 
-    EffectsBufferProvider* mBufferProvider;
+  EffectsBufferProvider *mBufferProvider;
 
-private:
-    uint32_t mInputSampleRate;
-    uint32_t mOutputSampleRate;
+ private:
+  uint32_t mInputSampleRate;
+  uint32_t mOutputSampleRate;
 };
 
-
 // ----------------------------------------------------------------------------
-}; // namespace android
+};  // namespace android
 
-#endif // ANDROID_EFFECTS_HW_ACC_H
+#endif  // ANDROID_EFFECTS_HW_ACC_H

@@ -62,24 +62,23 @@ extern "C" {
 #endif
 
 #define DEBUG_PRINT_ERROR LOGE
-#define DEBUG_PRINT       LOGI
-#define DEBUG_DETAIL      LOGV
+#define DEBUG_PRINT LOGI
+#define DEBUG_DETAIL LOGV
 
-typedef void (*message_func)(void* client_data, unsigned char id);
+typedef void (*message_func)(void *client_data, unsigned char id);
 
 /**
  @brief audio encoder ipc info structure
 
  */
-struct g711_ipc_info
-{
-    pthread_t thr;
-    int pipe_in;
-    int pipe_out;
-    int dead;
-    message_func process_msg_cb;
-    void         *client_data;
-    char         thread_name[128];
+struct g711_ipc_info {
+  pthread_t thr;
+  int pipe_in;
+  int pipe_out;
+  int dead;
+  message_func process_msg_cb;
+  void *client_data;
+  char thread_name[128];
 };
 
 /**
@@ -91,12 +90,12 @@ struct g711_ipc_info
  @return handle to command server
  */
 struct g711_ipc_info *omx_g711_thread_create(message_func cb,
-    void* client_data,
-    char *th_name);
+                                             void *client_data,
+                                             char *th_name);
 
 struct g711_ipc_info *omx_g711_event_thread_create(message_func cb,
-    void* client_data,
-    char *th_name);
+                                                   void *client_data,
+                                                   char *th_name);
 /**
  @brief This function stop command server
 
@@ -105,7 +104,6 @@ struct g711_ipc_info *omx_g711_event_thread_create(message_func cb,
  */
 void omx_g711_thread_stop(struct g711_ipc_info *g711_ipc);
 
-
 /**
  @brief This function post message in the command server
 
@@ -113,7 +111,7 @@ void omx_g711_thread_stop(struct g711_ipc_info *g711_ipc);
  @return none
  */
 void omx_g711_post_msg(struct g711_ipc_info *g711_ipc,
-                          unsigned char id);
+                       unsigned char id);
 
 #ifdef __cplusplus
 }

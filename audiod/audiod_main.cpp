@@ -22,18 +22,16 @@ for attribution purposes only.
 #define LOG_NDEBUG 0
 #define LOG_NDDEBUG 0
 
-#include <cutils/properties.h>
-
 #include <binder/IPCThreadState.h>
-#include <binder/ProcessState.h>
 #include <binder/IServiceManager.h>
-
+#include <binder/ProcessState.h>
+#include <cutils/properties.h>
 #include <utils/Log.h>
 #include <utils/threads.h>
 
 #if defined(HAVE_PTHREADS)
-# include <pthread.h>
-# include <sys/resource.h>
+#include <pthread.h>
+#include <sys/resource.h>
 #endif
 
 #include "AudioDaemon.h"
@@ -42,19 +40,17 @@ using namespace android;
 
 // ---------------------------------------------------------------------------
 
-int main(int argc, char** argv)
-{
+int main(int argc, char** argv) {
 #if defined(HAVE_PTHREADS)
-    setpriority(PRIO_PROCESS, 0, ANDROID_PRIORITY_AUDIO);
+  setpriority(PRIO_PROCESS, 0, ANDROID_PRIORITY_AUDIO);
 #endif
 
+  ALOGV("Audio daemon starting sequence..");
+  sp<ProcessState> proc(ProcessState::self());
+  ProcessState::self()->startThreadPool();
 
-    ALOGV("Audio daemon starting sequence..");
-    sp<ProcessState> proc(ProcessState::self());
-    ProcessState::self()->startThreadPool();
+  sp<AudioDaemon> audioService = new AudioDaemon();
+  IPCThreadState::self()->joinThreadPool();
 
-    sp<AudioDaemon> audioService = new AudioDaemon();
-    IPCThreadState::self()->joinThreadPool();
-
-    return 0;
+  return 0;
 }

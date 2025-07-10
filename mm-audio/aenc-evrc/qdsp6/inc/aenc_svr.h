@@ -61,24 +61,23 @@ extern "C" {
 #endif
 
 #define DEBUG_PRINT_ERROR LOGE
-#define DEBUG_PRINT       LOGI
-#define DEBUG_DETAIL      LOGV
+#define DEBUG_PRINT LOGI
+#define DEBUG_DETAIL LOGV
 
-typedef void (*message_func)(void* client_data, unsigned char id);
+typedef void (*message_func)(void *client_data, unsigned char id);
 
 /**
  @brief audio encoder ipc info structure
 
  */
-struct evrc_ipc_info
-{
-    pthread_t thr;
-    int pipe_in;
-    int pipe_out;
-    int dead;
-    message_func process_msg_cb;
-    void         *client_data;
-    char         thread_name[128];
+struct evrc_ipc_info {
+  pthread_t thr;
+  int pipe_in;
+  int pipe_out;
+  int dead;
+  message_func process_msg_cb;
+  void *client_data;
+  char thread_name[128];
 };
 
 /**
@@ -90,12 +89,12 @@ struct evrc_ipc_info
  @return handle to command server
  */
 struct evrc_ipc_info *omx_evrc_thread_create(message_func cb,
-    void* client_data,
-    char *th_name);
+                                             void *client_data,
+                                             char *th_name);
 
 struct evrc_ipc_info *omx_evrc_event_thread_create(message_func cb,
-    void* client_data,
-    char *th_name);
+                                                   void *client_data,
+                                                   char *th_name);
 /**
  @brief This function stop command server
 
@@ -104,7 +103,6 @@ struct evrc_ipc_info *omx_evrc_event_thread_create(message_func cb,
  */
 void omx_evrc_thread_stop(struct evrc_ipc_info *evrc_ipc);
 
-
 /**
  @brief This function post message in the command server
 
@@ -112,9 +110,9 @@ void omx_evrc_thread_stop(struct evrc_ipc_info *evrc_ipc);
  @return none
  */
 void omx_evrc_post_msg(struct evrc_ipc_info *evrc_ipc,
-                          unsigned char id);
+                       unsigned char id);
 
-void* omx_evrc_comp_timer_handler(void *);
+void *omx_evrc_comp_timer_handler(void *);
 
 #ifdef __cplusplus
 }

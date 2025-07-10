@@ -20,8 +20,9 @@
 #ifndef OFFLOAD_EFFECT_BUNDLE_H
 #define OFFLOAD_EFFECT_BUNDLE_H
 
-#include <tinyalsa/asoundlib.h>
 #include <sound/audio_effects.h>
+#include <tinyalsa/asoundlib.h>
+
 #include "effect_api.h"
 
 /* Retry for delay for mixer open */
@@ -40,17 +41,17 @@ typedef struct effect_ops_s effect_ops_t;
 typedef struct effect_context_s effect_context_t;
 
 struct output_context_s {
-    /* node in active_outputs_list */
-    struct listnode outputs_list_node;
-    /* io handle */
-    audio_io_handle_t handle;
-    /* list of effects attached to this output */
-    struct listnode effects_list;
-    /* pcm device id */
-    int pcm_device_id;
-    struct mixer *mixer;
-    struct mixer_ctl *ctl;
-    struct mixer_ctl *ref_ctl;
+  /* node in active_outputs_list */
+  struct listnode outputs_list_node;
+  /* io handle */
+  audio_io_handle_t handle;
+  /* list of effects attached to this output */
+  struct listnode effects_list;
+  /* pcm device id */
+  int pcm_device_id;
+  struct mixer *mixer;
+  struct mixer_ctl *ctl;
+  struct mixer_ctl *ref_ctl;
 };
 
 /* effect specific operations.
@@ -58,36 +59,36 @@ struct output_context_s {
  * Others are optional.
  */
 struct effect_ops_s {
-    int (*init)(effect_context_t *context);
-    int (*release)(effect_context_t *context);
-    int (*reset)(effect_context_t *context);
-    int (*enable)(effect_context_t *context);
-    int (*start)(effect_context_t *context, output_context_t *output);
-    int (*stop)(effect_context_t *context, output_context_t *output);
-    int (*disable)(effect_context_t *context);
-    int (*process)(effect_context_t *context, audio_buffer_t *in, audio_buffer_t *out);
-    int (*set_parameter)(effect_context_t *context, effect_param_t *param, uint32_t size);
-    int (*get_parameter)(effect_context_t *context, effect_param_t *param, uint32_t *size);
-    int (*set_device)(effect_context_t *context, uint32_t device);
-    int (*set_hw_acc_mode)(effect_context_t *context, int32_t value);
-    int (*command)(effect_context_t *context, uint32_t cmdCode, uint32_t cmdSize,
-            void *pCmdData, uint32_t *replySize, void *pReplyData);
+  int (*init)(effect_context_t *context);
+  int (*release)(effect_context_t *context);
+  int (*reset)(effect_context_t *context);
+  int (*enable)(effect_context_t *context);
+  int (*start)(effect_context_t *context, output_context_t *output);
+  int (*stop)(effect_context_t *context, output_context_t *output);
+  int (*disable)(effect_context_t *context);
+  int (*process)(effect_context_t *context, audio_buffer_t *in, audio_buffer_t *out);
+  int (*set_parameter)(effect_context_t *context, effect_param_t *param, uint32_t size);
+  int (*get_parameter)(effect_context_t *context, effect_param_t *param, uint32_t *size);
+  int (*set_device)(effect_context_t *context, uint32_t device);
+  int (*set_hw_acc_mode)(effect_context_t *context, int32_t value);
+  int (*command)(effect_context_t *context, uint32_t cmdCode, uint32_t cmdSize,
+                 void *pCmdData, uint32_t *replySize, void *pReplyData);
 };
 
 struct effect_context_s {
-    const struct effect_interface_s *itfe;
-    /* node in created_effects_list */
-    struct listnode effects_list_node;
-    /* node in output_context_t.effects_list */
-    struct listnode output_node;
-    effect_config_t config;
-    const effect_descriptor_t *desc;
-    /* io handle of the output the effect is attached to */
-    audio_io_handle_t out_handle;
-    uint32_t state;
-    bool offload_enabled;
-    bool hw_acc_enabled;
-    effect_ops_t ops;
+  const struct effect_interface_s *itfe;
+  /* node in created_effects_list */
+  struct listnode effects_list_node;
+  /* node in output_context_t.effects_list */
+  struct listnode output_node;
+  effect_config_t config;
+  const effect_descriptor_t *desc;
+  /* io handle of the output the effect is attached to */
+  audio_io_handle_t out_handle;
+  uint32_t state;
+  bool offload_enabled;
+  bool hw_acc_enabled;
+  effect_ops_t ops;
 };
 
 int set_config(effect_context_t *context, effect_config_t *config);
